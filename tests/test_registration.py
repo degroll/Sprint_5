@@ -2,6 +2,7 @@ from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 from locators import StartPage, LoginWindow, RegistrationWindow
 from data import ACCOUNT_DATA, URL, REGISTRATION_PASSWORD, USER_DATA, ERRORS
+from helpers import generate_email, generate_bad_email
 
 
 class TestRegistration:
@@ -21,9 +22,9 @@ class TestRegistration:
         driver.find_element(*RegistrationWindow.SUBMIT_PASSWORD).send_keys(password)
         driver.find_element(*RegistrationWindow.CREATE_ACCOUNT_BUTTON).click()
 
-    def test_registration_correct_email(self, driver, generate_email):
+    def test_registration_correct_email(self, driver):
 
-        email = generate_email
+        email = generate_email()
         self.create_account(driver, email=email)
 
         WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located(StartPage.USER_NAME))
@@ -33,9 +34,9 @@ class TestRegistration:
         assert avatar == URL["url_photo"]
         assert user_name == USER_DATA["user_name"]
 
-    def test_registration_uncorrect_email(self, driver, generate_bad_email):
+    def test_registration_uncorrect_email(self, driver):
 
-        email = generate_bad_email
+        email = generate_bad_email()
         self.create_account(driver, email=email)
 
         WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located(RegistrationWindow.RED_ERROR))
